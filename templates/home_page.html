@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Home Page</title>
+</head>
+<body class="bg-gray-900 text-gray-100 min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <nav class="bg-gray-800 w-full p-4 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="{{ url_for('home_page') }}" class="text-2xl font-bold text-green-500 hover:text-green-400">QuantChat</a>
+            <ul class="flex space-x-6">
+                <li><a href="{{ url_for('home_page') }}" class="text-gray-100 hover:text-green-500">Home</a></li>
+                <li><a href="{{ url_for('auth.logout') }}" class="text-gray-100 hover:text-red-500">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <div class="flex-grow flex flex-col items-center justify-center py-16">
+        <h2 class="text-4xl font-bold text-green-500 mb-8">Welcome, {{ username }}!</h2>
+
+        <!-- Flash messages for feedback -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="bg-green-500 text-white p-4 rounded-lg mb-8 w-80 text-center">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Placeholder for more content -->
+        <div class="bg-gray-800 p-8 rounded-lg shadow-lg w-4/5 sm:w-3/4 md:w-1/2 text-center">
+            <h3 class="text-2xl font-semibold text-gray-200 mb-4">Available Users</h3>
+            <ul class="space-y-2">
+                {% for user in users %}
+                    <li>
+                        <a href="{{ url_for('chat', recipient=user) }}" class="text-green-400 hover:text-green-500 text-lg">
+                            {{ user }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-center p-4 mt-8">
+        <p class="text-gray-400">© 2024 QuantChat. All rights reserved.</p>
+    </footer>
+</body>
+</html>
