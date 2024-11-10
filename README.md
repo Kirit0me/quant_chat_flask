@@ -4,4 +4,4 @@ Application for chatting with people with a twist of using BB84 protocol to exch
 
 To run the application: 
 
-```py app.py``` 
+```py app.py```     

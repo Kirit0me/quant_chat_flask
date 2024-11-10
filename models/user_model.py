@@ -1,7 +1,6 @@
 from utils.db import get_db_connection
 
 def create_user(username, password):
-    """Inserts a new user into the database."""
     conn = get_db_connection()
     if conn is None:
         return False
@@ -20,7 +19,6 @@ def create_user(username, password):
         return False
 
 def verify_user(username, password):
-    """Verifies if the user exists in the database with the correct password."""
     conn = get_db_connection()
     if conn is None:
         return False
@@ -37,3 +35,12 @@ def verify_user(username, password):
     except Exception as e:
         print("Error verifying user:", e)
         return False
+
+def get_all_users(exclude_username):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT username FROM messages WHERE username != %s;", (exclude_username,))
+    users = [user[0] for user in cursor.fetchall()]
+    cursor.close()
+    conn.close()
+    return users
