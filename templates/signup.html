@@ -9,7 +9,6 @@
 <body class="bg-black text-gray-100 min-h-screen flex flex-col items-center justify-center">
     <h2 class="text-3xl font-bold text-green-500 mb-8">Sign Up</h2>
 
-    <!-- Flash messages for feedback -->
 {% with messages = get_flashed_messages(with_categories=True) %}
     {% if messages %}
         {% for category, message in messages %}
