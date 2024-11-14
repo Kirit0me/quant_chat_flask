@@ -35,31 +35,46 @@
     </div>
 </div>
 
-<script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="text/javascript">
-    const socket = io.connect(window.location.origin);
     let recipient = '';
 
     function selectUser(user) {
         recipient = user;
         document.getElementById('chat-with').innerText = `Chat with ${user}`;
         document.getElementById('chat-box').innerHTML = '';
-        socket.emit('join', {room: user});
+        fetchMessages();
     }
 
     function sendMessage() {
         const message = document.getElementById('message-input').value;
         if (message && recipient) {
-            socket.emit('send_message', {'recipient': recipient, 'message': message});
-            document.getElementById('message-input').value = '';
+            $.post('/chat/send_message', {
+                'recipient': recipient,
+                'message': message
+            }).done(function() {
+                document.getElementById('message-input').value = '';
+                fetchMessages();  // Refresh messages after sending
+            });
         }
     }
 
-    socket.on('receive_message', function(data) {
-        const chatBox = document.getElementById('chat-box');
-        const newMessage = `<p><strong>${data.sender}:</strong> ${data.message}</p>`;
-        chatBox.innerHTML += newMessage;
-        chatBox.scrollTop = chatBox.scrollHeight;
-    });
+    function fetchMessages() {
+        if (recipient) {
+            $.get(`/chat/fetch_messages?recipient=${recipient}`, function(messages) {
+                const chatBox = document.getElementById('chat-box');
+                chatBox.innerHTML = '';  // Clear current messages
+                messages.forEach(function(msg) {
+                    const newMessage = `<p><strong>${msg.sender}:</strong> ${msg.message}</p>`;
+                    chatBox.innerHTML += newMessage;
+                });
+                chatBox.scrollTop = chatBox.scrollHeight;  // Scroll to latest message
+            });
+        }
+    }
+
+    // Poll for new messages every second
+    setInterval(fetchMessages, 1000);
 </script>
+
 {% endblock %}
